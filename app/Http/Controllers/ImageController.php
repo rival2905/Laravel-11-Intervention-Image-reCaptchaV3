@@ -41,17 +41,18 @@ class ImageController extends Controller
 
         $imageName = time() . '.' . $image->getClientOriginalExtension();
 
-        $image->move('uploads', $imageName);
+        // $image->move('uploads', $imageName);
 
         // create new manager instance with desired driver and default configuration
         $imgManager = new ImageManager(new Driver());
 
         // create new image instance
-        $thumbImage = $imgManager->read('uploads/' . $imageName);
+        // $thumbImage = $imgManager->read('uploads/' . $imageName);
+        $thumbImage = $imgManager->read($image);
 
         // resize to 300 x 200 pixel
-        $thumbImage->resize(150, 150);
-
+        // $thumbImage->resize(150, 150);
+        $thumbImage->scaleDown(width: 150);
         $thumbImage->save(public_path('uploads/thumbnails/' . $imageName));
 
         // dd($imageName, $request->gambar);

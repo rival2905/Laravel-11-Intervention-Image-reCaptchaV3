@@ -9,6 +9,8 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    {{-- <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcuIwUqAAAAAOGYvWE-yycH-YazrBTb5GgeIo73"></script> --}}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITE_KEY') }}"></script>
 </head>
 
 <body>
@@ -18,10 +20,12 @@
                 {{ session('success') }}
             </div>
         @endif
-
+        @if ($errors->has('g-recaptcha-response'))
+            <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+        @endif
         <div class="card shadow">
             <div class="card-body">
-                <form action="/kirim" method="POST" enctype="multipart/form-data">
+                <form action="/kirim" method="POST" enctype="multipart/form-data" id="imageForm">
                     @csrf
                     {{-- <div class="mb-3">
                         <label for="nama" class="form-label">Nama</label>
@@ -53,7 +57,7 @@
                         @enderror
                     </div> --}}
                     <div class="mb-3">
-                        <label for="gambar" class="form-label">Pilih Gambar</label>
+                        <label for="gambar" class="form-label">Pilih Gambar 1   </label>
                         <input type="file" class="form-control shadow" id="gambar" name="gambar">
                         <small class="form-text text-muted">File harus berupa gambar (jpeg, png, jpg, gif) dan tidak
                             lebih dari 2MB.</small> <br>
@@ -75,6 +79,7 @@
                             <label class="text-danger">{{ $message }}</label>
                         @enderror
                     </div> --}}
+                  
 
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -88,17 +93,20 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-        $('#reload').click(function() {
-            $.ajax({
-                type: 'GET',
-                url: 'reload-captcha',
-                success: function(data) {
-                    $(".captcha span").html(data.captcha)
-                }
-            })
-        })
+    <!-- Replace the variables below. -->
+    
+    <script type="text/javascript">
+    $('#imageForm').submit(function(event) {
+        event.preventDefault();
+        grecaptcha.ready(function() {
+            grecaptcha.execute("{{ env('GOOGLE_RECAPTCHA_KEY') }}", {action: 'subscribe_newsletter'}).then(function(token) {
+                $('#imageForm').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+                $('#imageForm').unbind('submit').submit();
+            });;
+        });
+    });
     </script>
+
 </body>
 
 </html>

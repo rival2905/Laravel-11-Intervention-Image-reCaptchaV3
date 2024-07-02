@@ -8,7 +8,7 @@ use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\ImageManager;
 // use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\Drivers\Gd\Driver;
-
+use App\Rules\V3ReCaptcha;
 
 class ImageController extends Controller
 {
@@ -35,6 +35,7 @@ class ImageController extends Controller
     {
         $request->validate([
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'g-recaptcha-response' => ['required', new V3ReCaptcha]
         ]);
 
         $image = $request->file('gambar');

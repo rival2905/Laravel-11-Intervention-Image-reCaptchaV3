@@ -9,7 +9,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    {{-- <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcuIwUqAAAAAOGYvWE-yycH-YazrBTb5GgeIo73"></script> --}}
+    {{-- <script src="https://www.google.com/recaptcha/enterprise.js?render={{ env('RECAPTCHAV3_SITE_KEY') }}"></script> --}}
     <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITE_KEY') }}"></script>
 </head>
 
@@ -99,7 +99,7 @@
     $('#imageForm').submit(function(event) {
         event.preventDefault();
         grecaptcha.ready(function() {
-            grecaptcha.execute("{{ env('GOOGLE_RECAPTCHA_KEY') }}", {action: 'subscribe_newsletter'}).then(function(token) {
+            grecaptcha.execute("{{ env('RECAPTCHAV3_SITE_KEY') }}", {action: 'subscribe_newsletter'}).then(function(token) {
                 $('#imageForm').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
                 $('#imageForm').unbind('submit').submit();
             });;

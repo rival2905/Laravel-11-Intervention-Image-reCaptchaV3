@@ -34,7 +34,7 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:3000',
             'g-recaptcha-response' => ['required', new V3ReCaptcha]
         ]);
 
@@ -53,7 +53,7 @@ class ImageController extends Controller
 
         // resize to 300 x 200 pixel
         // $thumbImage->resize(150, 150);
-        $thumbImage->scaleDown(width: 150);
+        $thumbImage->scaleDown(width: 200);
         $thumbImage->save(public_path('uploads/thumbnails/' . $imageName));
 
         // dd($imageName, $request->gambar);
